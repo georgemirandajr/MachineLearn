@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="description" content="Machinelearn : Practical Machine Learning Corsera">
+
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+
+    <title>Machinelearn</title>
+  </head>
+
+  <body>
+
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/ferreras/MachineLearn">View on GitHub</a>
+
+          <h1 id="project_title">Machinelearn</h1>
+          <h2 id="project_tagline">Practical Machine Learning Corsera</h2>
+
+            <section id="downloads">
+              <a class="zip_download_link" href="https://github.com/ferreras/MachineLearn/zipball/master">Download this project as a .zip file</a>
+              <a class="tar_download_link" href="https://github.com/ferreras/MachineLearn/tarball/master">Download this project as a tar.gz file</a>
+            </section>
+        </header>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
+        <p>&lt;!DOCTYPE html&gt;
+
+</p>
+Machine Learning<p></p>
+
+code{white-space: pre;}<p></p>
+
+
+pre:not([class]) {
+background-color: white;
+}
+<p>
+</p>
+
+
+.main-container {
+max-width: 940px;
+margin-left: auto;
+margin-right: auto;
+}
+<div>
+<div>
+<h1>
+<a name="machine-learning" class="anchor" href="#machine-learning"><span class="octicon octicon-link"></span></a>Machine Learning</h1>
+<h4>
+<a name="antonio-ferreras" class="anchor" href="#antonio-ferreras"><span class="octicon octicon-link"></span></a><em>Antonio Ferreras</em>
+</h4>
+<h4>
+<a name="thursday-august-21-2014" class="anchor" href="#thursday-august-21-2014"><span class="octicon octicon-link"></span></a><em>Thursday, August 21, 2014</em>
+</h4>
+</div>
+
+<div>
+<h3>
+<a name="1-executive-summary" class="anchor" href="#1-executive-summary"><span class="octicon octicon-link"></span></a>1. Executive Summary</h3>
+<p>This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <a href="http://rmarkdown.rstudio.com">http://rmarkdown.rstudio.com</a>.</p>
+<p>When you click the <strong>Knit</strong> button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:</p>
+</div>
+
+<div>
+<h3>
+<a name="introduction" class="anchor" href="#introduction"><span class="octicon octicon-link"></span></a>Introduction</h3>
+<p>Using devices such as Jawbone Up, Nike FuelBand, and Fitbit it is now possible to collect a large amount of data about personal activity relatively inexpensively. One thing that people regularly do is quantify how much of a particular activity they do, but they rarely <strong>quantify how well they do it</strong>. The goal of this will be to use data from accelerometers on the belt, forearm, arm, and dumbell of 6 participants. They were asked to perform barbell lifts correctly and incorrectly in 5 different ways. More information available in <a href="http://groupware.les.inf.puc-rio.br/har"></a><a href="http://groupware.les.inf.puc-rio.br/har">http://groupware.les.inf.puc-rio.br/har</a></p>
+<p>The goal of this project is to predict the manner in which they did the exercise. This is the <em>classe</em> variable in the training set.</p>
+</div>
+
+<div>
+<h3>
+<a name="2-data-inspection" class="anchor" href="#2-data-inspection"><span class="octicon octicon-link"></span></a>2. Data inspection</h3>
+<pre><code>train &lt;- read.csv(".//pml-training.csv")
+test &lt;- read.csv(".//pml-testing.csv")
+dim(train)</code></pre>
+<pre><code>## [1] 19622 160</code></pre>
+<p>19622 records in the data set and 160 variables. The data is quite noisy, as we know for the paper, so the appropiate model could be a Random Forest, but there are too much data for fitting a model. Then the strategy for fitting a correct model is first reduce as much as possible the number of the variables, and then fit the Random Forest model and finally fit the parameters.</p>
+<pre><code>library(caret)</code></pre>
+<pre><code>## Loading required package: lattice
+## Loading required package: ggplot2</code></pre>
+<pre><code>library(rpart)
+library(randomForest)</code></pre>
+<pre><code>## randomForest 4.6-10
+## Type rfNews() to see new features/changes/bug fixes.</code></pre>
+<pre><code>set.seed(1966)</code></pre>
+</div>
+
+<div>
+<h3>
+<a name="3-variable-reduction" class="anchor" href="#3-variable-reduction"><span class="octicon octicon-link"></span></a>3. Variable reduction</h3>
+<p>Several variables do not have to do with the measurements. Following the paper cited above we will not use them in the prediction model. Lets eliminate them.</p>
+<ul>
+<li>*problem_id. It is merely one enumeration of the measurements.</li>
+</ul>
+<pre><code>combi$X &lt;- NULL
+combi$raw_timestamp_part_1 &lt;- NULL
+combi$raw_timestamp_part_2 &lt;- NULL
+combi$cvtd_timestamp &lt;- NULL
+combi$num_window &lt;- NULL
+combi$user_name &lt;- NULL
+combi$classe &lt;- factor(combi$classe)
+ncol(combi)</code></pre>
+<pre><code>## [1] 53</code></pre>
+<pre><code>modfit1 &lt;- rpart(classe ~ ., data = combi[c(21:19642),], method="class")
+pred_train_1 &lt;- predict(modfit1, newdata=combi[c(21:19642),], type ="class")
+confusionMatrix(pred_train_1, combi[c(21:19642),"classe"])$overall[1]</code></pre>
+<pre><code>## Accuracy
+## 0.7556</code></pre>
+<pre><code>vars &lt;- varImp(modfit1)
+sum(vars &gt; 0)</code></pre>
+<pre><code>## [1] 36</code></pre>
+<pre><code>combi &lt;- combi[, c(rownames(vars)[vars$Overall&gt;0],"classe")]</code></pre>
+<p>Note that the <code>echo = FALSE</code> parameter was added to the code chunk to prevent printing of the R code that generated the plot.</p>
+</div>
+
+<div>
+<h3>
+<a name="4-model-tunning" class="anchor" href="#4-model-tunning"><span class="octicon octicon-link"></span></a>4. Model Tunning</h3>
+<pre><code>modfit3 &lt;- randomForest(classe ~ ., data = combi[c(21:19642),], importance=TRUE)
+pred_train_3 &lt;- predict(modfit3, newdata=combi[c(21:19642),], type ="class")
+confusionMatrix(pred_train_3, combi[c(21:19642),"classe"])$overall[1]</code></pre>
+<pre><code>## Accuracy
+## 1</code></pre>
+<pre><code>vars &lt;- importance(modfit3)
+nrow(vars)</code></pre>
+<pre><code>## [1] 36</code></pre>
+<pre><code>summary(vars[,"MeanDecreaseGini"])</code></pre>
+<pre><code>## Min. 1st Qu. Median Mean 3rd Qu. Max.
+## 124 257 330 431 477 1450</code></pre>
+<pre><code>Giny &lt;- vars[order(vars[,"MeanDecreaseGini"], decreasing = TRUE) ,"MeanDecreaseGini"]
+for (i in c(1:11)) {
+Giny_o &lt;- names(Giny[1:i+1])
+data1 &lt;- combi[,c(Giny_o, "classe")]
+modfit4 &lt;- randomForest(classe ~ ., data = data1[c(21:19642),], importance=TRUE)
+pred_train_4 &lt;- predict(modfit4, newdata=data1[c(21:19642),], type ="class")
+y[i] &lt;- confusionMatrix(pred_train_4, data1[c(21:19642),"classe"])$overall[1]
+}
+plot(c(2:12),y,type="b", xlab="Number of Variables", ylab="Accuracy", main="Random Forest", las=1, col="blue")</code></pre>
+<p><img title="plot of chunk unnamed-chunk-8" alt="plot of chunk unnamed-chunk-8" width="672"></p>
+<pre><code>data1 = combi[,c(names(Giny[1:6]), "classe")]
+modfit5 &lt;- randomForest(classe ~ ., data = data1[c(21:19642),], importance=TRUE)
+pred_test_5 &lt;- predict(modfit5, newdata=data1[c(1:20),], type ="class")
+pred_test_5</code></pre>
+<pre><code>## 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20
+## B A B A A E D B A A B C B A E E A B B B
+## Levels: A B C D E</code></pre>
+</div>
+
+<div>
+<h3>
+<a name="5-conclusion" class="anchor" href="#5-conclusion"><span class="octicon octicon-link"></span></a>5. Conclusion</h3>
+<pre><code>names(importance(modfit5)[,"MeanDecreaseGini"])</code></pre>
+<pre><code>## [1] "roll_belt" "yaw_belt" "pitch_forearm"
+## [4] "magnet_dumbbell_z" "pitch_belt" "magnet_dumbbell_y"</code></pre>
+</div>
+
+<div>
+<h2>
+<a name="appendix" class="anchor" href="#appendix"><span class="octicon octicon-link"></span></a>Appendix</h2>
+<div>
+<h3>
+<a name="a1-final-model" class="anchor" href="#a1-final-model"><span class="octicon octicon-link"></span></a>A1. Final model</h3>
+<pre><code>pred_train_5 &lt;- predict(modfit5, newdata=data1[c(21:19642),], type ="class")
+confusionMatrix(pred_train_5, data1[c(21:19642),"classe"])</code></pre>
+<pre><code>## Confusion Matrix and Statistics
+##
+## Reference
+## Prediction A B C D E
+## A 5577 0 0 0 0
+## B 0 3797 2 0 0
+## C 2 0 3420 0 0
+## D 1 0 0 3216 0
+## E 0 0 0 0 3607
+##
+## Overall Statistics
+##
+## Accuracy : 1
+## 95% CI : (0.999, 1)
+## No Information Rate : 0.284
+## P-Value [Acc &gt; NIR] : &lt;2e-16
+##
+## Kappa : 1
+## Mcnemar's Test P-Value : NA
+##
+## Statistics by Class:
+##
+## Class: A Class: B Class: C Class: D Class: E
+## Sensitivity 0.999 1.000 0.999 1.000 1.000
+## Specificity 1.000 1.000 1.000 1.000 1.000
+## Pos Pred Value 1.000 0.999 0.999 1.000 1.000
+## Neg Pred Value 1.000 1.000 1.000 1.000 1.000
+## Prevalence 0.284 0.194 0.174 0.164 0.184
+## Detection Rate 0.284 0.194 0.174 0.164 0.184
+## Detection Prevalence 0.284 0.194 0.174 0.164 0.184
+## Balanced Accuracy 1.000 1.000 1.000 1.000 1.000</code></pre>
+</div>
+
+<p></p>
+</div>
+</div>
+
+<p>
+</p>
+      </section>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">Machinelearn maintained by <a href="https://github.com/ferreras">ferreras</a></p>
+        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
+      </footer>
+    </div>
+
+    
+
+  </body>
+</html>
