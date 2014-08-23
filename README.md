@@ -1,16 +1,17 @@
----
-title: "README"
-author: "Antonio Ferreras"
-date: "Friday, August 22, 2014"
-output: html_document
----
+# README
+Antonio Ferreras  
+Friday, August 22, 2014  
 
 ## Practical Machine Learning
 
-This project corresponds to  the Assigment of the Coursera “Practice Machine Learn”. A classification model is fitted from a train-test data from more than 19.000 records and and 160 variables. I followed a proccess of reducing the number of variables, mantaining only the most significatives, while preserving the accuracy of the model.
+This project corresponds to  the Assigment of the Coursera Practice Machine Learn. A classification model is fitted from a train-test data from more than 19.000 records and and 160 variables. I followed a proccess of reducing the number of variables, mantaining only the most significatives, while preserving the accuracy of the model.
 
 The full report can be found in de index file in this directory (formats: HTML, Rmds,md and pdf)
 
 It also can be found as a Web page in th gth-pages in the github site:
 
 [http://ferreras.github.io/MachineLearn/](http://ferreras.github.io/MachineLearn/)
+
+Alternative, it can be seen at RPubs:
+
+[http://rpubs.com/ferreras/25863](http://rpubs.com/ferreras/25863)

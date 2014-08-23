@@ -2,7 +2,8 @@
 title: "README"
 author: "Antonio Ferreras"
 date: "Friday, August 22, 2014"
-output: html_document
+output:
+  html_document: default
 ---
 
 ## Practical Machine Learning
@@ -14,3 +15,7 @@ The full report can be found in de index file in this directory (formats: HTML, 
 It also can be found as a Web page in th gth-pages in the github site:
 
 [http://ferreras.github.io/MachineLearn/](http://ferreras.github.io/MachineLearn/)
+
+Alternative, it can be seen at RPubs:
+
+[http://rpubs.com/ferreras/25863](http://rpubs.com/ferreras/25863)
