@@ -155,7 +155,7 @@ plot(c(2:12),y,type="b", las=1, col="blue",
      xlab="Number of Variables", ylab="Accuracy", main="Random Forest")
 ```
 
-![plot of chunk unnamed-chunk-9](./borrame_files/figure-html/unnamed-chunk-9.png) 
+![plot of chunk unnamed-chunk-9](./auxiliar_files/figure-html/unnamed-chunk-9.png) 
 
 The model rapidly converge to a perfect Accuracy, with 10 variables or more, the Accuracy is perfect. And with only **6 variables** the Accuracy is *0.9996942*. I chose this model as the solution of this assigment. Let's generate the answer for the 20 questions of the test data.
 
